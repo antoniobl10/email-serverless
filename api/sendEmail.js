@@ -31,6 +31,16 @@ const createTransporter = (service) => {
 };
 
 module.exports = async (req, res) => {
+  const allowedOrigins = ['http://localhost:4321', 'https://www.asaplegal.com'];
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin); // Allow only the specified origins
+  }
+
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
