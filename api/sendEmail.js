@@ -49,8 +49,8 @@ app.post('/api/sendEmail', async (req, res) => {
   }
 
   const recipients = [
-    'developers@nationwidelegal.com',
     'anikola@nationwidelegal.com',
+    'jcaamal@nationwidelegal.com',
   ];
 
   try {
