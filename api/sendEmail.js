@@ -50,7 +50,7 @@ app.post('/api/sendEmail', async (req, res) => {
 
   const recipients = [
     'developers@nationwidelegal.com',
-    'antoniblanc.aba@gmail.com'
+    'anikola@nationwidelegal.com',
   ];
 
   try {
