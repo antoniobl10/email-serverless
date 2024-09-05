@@ -1,9 +1,16 @@
+const express = require('express');
+const cors = require('cors');
 const nodemailer = require('nodemailer');
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
 
 const createTransporter = (service) => {
   if (service === 'gmail') {
     return nodemailer.createTransport({
-      service: 'gmail', // Configuración para Gmail
+      service: 'gmail',
       auth: {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_PASS
@@ -30,7 +37,7 @@ const createTransporter = (service) => {
   }
 };
 
-module.exports = async (req, res) => {
+app.post('/api/sendEmail', async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
@@ -61,4 +68,9 @@ module.exports = async (req, res) => {
     console.error('Error sending email:', error);
     return res.status(500).json({ message: error.message });
   }
-};
+});
+
+// Start server
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Server running on port ${process.env.PORT || 3000}`);
+});
