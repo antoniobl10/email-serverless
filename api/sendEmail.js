@@ -43,7 +43,7 @@ app.post('/api/sendEmail', async (req, res) => {
   }
 
   const { service, subject, body } = req.body;
-  subject = 'ASAP Legal - ' + subject;
+  const finalSubject = 'ASAP Legal - ' + subject;
 
   if (!service || !subject || !body) {
     return res.status(400).json({ message: 'Missing required fields' });
@@ -60,7 +60,7 @@ app.post('/api/sendEmail', async (req, res) => {
     await transporter.sendMail({
       from: service === 'gmail' ? process.env.GMAIL_USER : process.env.OUTLOOK_USER,
       to: recipients.join(', '),
-      subject,
+      subject: finalSubject,
       text: body
     });
 
