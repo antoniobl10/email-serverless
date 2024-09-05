@@ -35,19 +35,23 @@ module.exports = async (req, res) => {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { service, to, subject, body } = req.body;
+  const { service, subject, body } = req.body;
 
-  if (!service || !to || !subject || !body) {
+  if (!service || !subject || !body) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
+  const recipients = [
+    'developers@nationwidelegal.com',
+    'antoniblanc.aba@gmail.com'
+  ];
+
   try {
     const transporter = createTransporter(service);
-    const recipients = Array.isArray(to) ? to.join(', ') : to;
 
     await transporter.sendMail({
       from: service === 'gmail' ? process.env.GMAIL_USER : process.env.OUTLOOK_USER,
-      to: recipients,
+      to: recipients.join(', '),
       subject,
       text: body
     });
@@ -55,6 +59,6 @@ module.exports = async (req, res) => {
     return res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
     console.error('Error sending email:', error);
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: error.message });
   }
 };
