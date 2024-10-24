@@ -42,35 +42,41 @@ app.post('/api/sendEmail', async (req, res) => {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { service, subject, body } = req.body;
+  const { service, subject, body, isOrder } = req.body;
   const finalSubject = 'ASAP Legal - ' + subject;
 
   if (!service || !subject || !body) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
-
-  const recipients = [
+  let recipients = [
     'anikola@nationwidelegal.com',
     'jcaamal@nationwidelegal.com',
     'julien@asaplegal.com'
   ];
-
-  try {
-    const transporter = createTransporter(service);
-
-    await transporter.sendMail({
-      from: service === 'gmail' ? process.env.GMAIL_USER : process.env.OUTLOOK_USER,
-      to: recipients.join(', '),
-      subject: finalSubject,
-      text: body
-    });
-
-    return res.status(200).json({ message: 'Email sent successfully' });
-  } catch (error) {
-    console.error('Error sending email:', error);
-    return res.status(500).json({ message: error.message });
+  if (isOrder) {
+    recipients = [
+      'jcaamal@nationwidelegal.com',
+      'ksweet@nationwidelegal.com',
+      'developers@nationwidelegal.com'
+    ];
   }
-});
+
+    try {
+      const transporter = createTransporter(service);
+
+      await transporter.sendMail({
+        from: service === 'gmail' ? process.env.GMAIL_USER : process.env.OUTLOOK_USER,
+        to: recipients.join(', '),
+        subject: finalSubject,
+        text: body
+      });
+
+      return res.status(200).json({ message: 'Email sent successfully' });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return res.status(500).json({ message: error.message });
+    }
+  });
 
 // Start server
 app.listen(process.env.PORT || 3000, () => {
