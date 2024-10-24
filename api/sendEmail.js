@@ -55,8 +55,8 @@ app.post('/api/sendEmail', async (req, res) => {
   ];
   if (isOrder) {
     recipients = [
-      // 'jcaamal@nationwidelegal.com',
-      // 'ksweet@nationwidelegal.com',
+      'jcaamal@nationwidelegal.com',
+      'ksweet@nationwidelegal.com',
       'developers@nationwidelegal.com'
     ];
     finalSubject = 'New Order - ' + subject;
