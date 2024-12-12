@@ -88,47 +88,6 @@ app.post('/api/sendEmail', async (req, res) => {
     }
   }
 
-  const htmlBody = `
-    <html>
-      <head>
-        <style>
-          table {
-            border-collapse: collapse;
-            width: 100%;
-          }
-          th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-          }
-          th {
-            background-color: #f4f4f4;
-            text-align: left;
-          }
-        </style>
-      </head>
-      <body>
-        <h2>Form Details</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Field</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${formData.map(item => `
-              <tr>
-                <td>${item.key}</td>
-                <td>${item.value}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-        <p>${body}</p>
-      </body>
-    </html>
-  `;
-
   try {
     const transporter = createTransporter(service);
 
