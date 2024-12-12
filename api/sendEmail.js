@@ -42,7 +42,7 @@ app.post('/api/sendEmail', async (req, res) => {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { service, subject, body, isOrder } = req.body;
+  const { service, subject, body, isOrder, formType } = req.body;
   let finalSubject = 'ASAP Legal - ' + subject;
 
   if (!service || !subject || !body) {
@@ -59,6 +59,30 @@ app.post('/api/sendEmail', async (req, res) => {
       'ksweet@nationwidelegal.com',
       'developers@nationwidelegal.com'
     ];
+    if(formType === 'Service of Process') {
+      recipients = [
+        'developers@nationwidelegal.com'
+      ];
+    } else if(formType === 'E-Filing') {
+      recipients = [
+        'david.tariantet@gmail.com'
+      ];
+    } else if(formType === 'Court Services') {
+      recipients = [
+        'jcaamal@nationwidelegal.com',
+        'ksweet@nationwidelegal.com',
+        'developers@nationwidelegal.com'
+      ];
+    } else if(formType === 'Court Reporting') {
+      recipients = [
+        'jcaamal@nationwidelegal.com',
+        'ksweet@nationwidelegal.com',
+        'developers@nationwidelegal.com'
+      ];
+    }
+
+
+    
     finalSubject = 'New Order - ' + subject;
   }
 
