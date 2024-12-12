@@ -37,6 +37,95 @@ const createTransporter = (service) => {
   }
 };
 
+const baseFieldDescriptions = {
+  form_type: "Form Type",
+  name: "Contact Name",
+  email: "Email",
+  phonenumber: "Phone Number",
+  company: "Company (Optional)",
+  address: "Address Line 1",
+  city: "City",
+  state: "State",
+  zip: "ZIP Code",
+  party_served: "Party Being Served",
+  address2: "Alternate Address Line 1",
+  city2: "Alternate City",
+  state2: "Alternate State",
+  zip2: "Alternate ZIP Code",
+  address3: "Additional Address Line 1",
+  city3: "Additional City",
+  state3: "Additional State",
+  zip3: "Additional ZIP Code",
+  documents: "List of Documents",
+  message: "Special Instructions",
+  depositionOfficer: "Are we acting as your Deposition Officer?"
+};
+
+const generateFieldDescriptions = (serviceNumber) => {
+  const fieldDescriptions = {};
+  Object.keys(baseFieldDescriptions).forEach((key) => {
+    fieldDescriptions[`${key}${serviceNumber}`] = `${baseFieldDescriptions[key]} (Service ${serviceNumber})`;
+  });
+  return fieldDescriptions;
+};
+
+const generateEmailBody = (formData) => {
+  let htmlBody = `
+    <html>
+      <head>
+        <style>
+          table {
+            border-collapse: collapse;
+            width: 100%;
+          }
+          th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+          }
+          th {
+            background-color: #f2f2f2;
+            text-align: left;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Order Details</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+  `;
+
+  Object.entries(formData).forEach(([key, value]) => {
+    const description = allFieldDescriptions[key] || key; // Usa descripción o clave si no está mapeada
+    htmlBody += `
+      <tr>
+        <td>${description}</td>
+        <td>${value || "N/A"}</td>
+      </tr>
+    `;
+  });
+
+  htmlBody += `
+          </tbody>
+        </table>
+      </body>
+    </html>
+  `;
+
+  return htmlBody;
+};
+
+// Combinar descripciones de todos los servicios
+const allFieldDescriptions = {};
+for (let i = 1; i <= 6; i++) {
+  Object.assign(allFieldDescriptions, generateFieldDescriptions(i));
+}
+
 app.post('/api/sendEmail', async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
@@ -87,48 +176,7 @@ app.post('/api/sendEmail', async (req, res) => {
       ];
     }
   }
-
-  const htmlBody = `
-    <html>
-      <head>
-        <style>
-          table {
-            border-collapse: collapse;
-            width: 100%;
-          }
-          th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-          }
-          th {
-            background-color: #f4f4f4;
-            text-align: left;
-          }
-        </style>
-      </head>
-      <body>
-        <h2>Form Details</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Key</th>
-              <th>Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${formData.map(item => `
-              <tr>
-                <td>${item.key}</td>
-                <td>${item.value}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-        <p>${body}</p>
-      </body>
-    </html>
-  `;
-
+  
   try {
     const transporter = createTransporter(service);
 
@@ -137,7 +185,7 @@ app.post('/api/sendEmail', async (req, res) => {
       to: recipients.join(', '),
       subject: finalSubject,
       // text: body, // Usar el texto como cuerpo del email
-      html: htmlBody
+      html: generateEmailBody(formData)
     });
 
     return res.status(200).json({ message: 'Email sent successfully' });
