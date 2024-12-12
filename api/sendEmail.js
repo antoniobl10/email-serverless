@@ -61,8 +61,6 @@ app.post('/api/sendEmail', async (req, res) => {
     ];
     if(formType === 'Service of Process') {
       recipients = [
-        'jcaamal@nationwidelegal.com',
-        'ksweet@nationwidelegal.com',
         'developers@nationwidelegal.com'
       ];
     } else if(formType === 'E-Filing') {
