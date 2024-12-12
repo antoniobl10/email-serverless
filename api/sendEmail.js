@@ -42,7 +42,7 @@ app.post('/api/sendEmail', async (req, res) => {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { service, subject, body, isOrder, formType } = req.body;
+  const { service, subject, body, isOrder, formData, formType } = req.body;
   let finalSubject = 'ASAP Legal - ' + subject;
 
   if (!service || !subject || !body) {
@@ -54,58 +54,98 @@ app.post('/api/sendEmail', async (req, res) => {
     'julien@asaplegal.com'
   ];
   if (isOrder) {
+    finalSubject = 'New Order - ' + subject;
+
     recipients = [
       'jcaamal@nationwidelegal.com',
       'ksweet@nationwidelegal.com',
       'developers@nationwidelegal.com'
     ];
-    if(formType === 'Service of Process') {
+    if (formType === 'Service of Process') {
       recipients = [
         'jcaamal@nationwidelegal.com',
         'ksweet@nationwidelegal.com',
         'developers@nationwidelegal.com'
       ];
-    } else if(formType === 'E-Filing') {
+    } else if (formType === 'E-Filing') {
       recipients = [
         'jcaamal@nationwidelegal.com',
         'ksweet@nationwidelegal.com',
         'developers@nationwidelegal.com'
       ];
-    } else if(formType === 'Court Services') {
+    } else if (formType === 'Court Services') {
       recipients = [
         'jcaamal@nationwidelegal.com',
         'ksweet@nationwidelegal.com',
         'developers@nationwidelegal.com'
       ];
-    } else if(formType === 'Court Reporting') {
+    } else if (formType === 'Court Reporting') {
       recipients = [
         'jcaamal@nationwidelegal.com',
         'ksweet@nationwidelegal.com',
         'developers@nationwidelegal.com'
       ];
     }
-
-
-    
-    finalSubject = 'New Order - ' + subject;
   }
 
-    try {
-      const transporter = createTransporter(service);
+  const htmlBody = `
+    <html>
+      <head>
+        <style>
+          table {
+            border-collapse: collapse;
+            width: 100%;
+          }
+          th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+          }
+          th {
+            background-color: #f4f4f4;
+            text-align: left;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>Form Details</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${formData.map(item => `
+              <tr>
+                <td>${item.key}</td>
+                <td>${item.value}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <p>${body}</p>
+      </body>
+    </html>
+  `;
 
-      await transporter.sendMail({
-        from: service === 'gmail' ? process.env.GMAIL_USER : process.env.OUTLOOK_USER,
-        to: recipients.join(', '),
-        subject: finalSubject,
-        text: body
-      });
+  try {
+    const transporter = createTransporter(service);
 
-      return res.status(200).json({ message: 'Email sent successfully' });
-    } catch (error) {
-      console.error('Error sending email:', error);
-      return res.status(500).json({ message: error.message });
-    }
-  });
+    await transporter.sendMail({
+      from: service === 'gmail' ? process.env.GMAIL_USER : process.env.OUTLOOK_USER,
+      to: recipients.join(', '),
+      subject: finalSubject,
+      // text: body, // Usar el texto como cuerpo del email
+      html: htmlBody
+    });
+
+    return res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return res.status(500).json({ message: error.message });
+  }
+});
 
 // Start server
 app.listen(process.env.PORT || 3000, () => {
