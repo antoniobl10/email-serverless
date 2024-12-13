@@ -61,31 +61,24 @@ app.post('/api/sendEmail', async (req, res) => {
       'ksweet@nationwidelegal.com',
       'developers@nationwidelegal.com'
     ];
-    if (formType === 'Service of Process') {
+    if (formType === 'Service of Process' || formType === 'E-Filing' 
+          || formType === 'Court Services' || formType === 'Subpoena Services') {
       recipients = [
-        'jcaamal@nationwidelegal.com',
-        'ksweet@nationwidelegal.com',
-        'developers@nationwidelegal.com'
+        'web@nationwidelegal.com'
       ];
-    } else if (formType === 'E-Filing') {
+    } else if (formType === 'Investigations') {
       recipients = [
-        'jcaamal@nationwidelegal.com',
-        'ksweet@nationwidelegal.com',
-        'developers@nationwidelegal.com'
-      ];
-    } else if (formType === 'Court Services') {
-      recipients = [
-        'jcaamal@nationwidelegal.com',
-        'ksweet@nationwidelegal.com',
-        'developers@nationwidelegal.com'
+        'investigations@nationwidelegal.com',
       ];
     } else if (formType === 'Court Reporting') {
       recipients = [
-        'jcaamal@nationwidelegal.com',
-        'ksweet@nationwidelegal.com',
-        'developers@nationwidelegal.com'
+        'emann@nationwidelegal.com'
       ];
     }
+
+    recipients = [
+      'david.tarianet@gmail.com'
+    ];
   }
 
   try {
