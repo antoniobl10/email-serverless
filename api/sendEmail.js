@@ -48,11 +48,7 @@ app.post('/api/sendEmail', async (req, res) => {
   if (!service || !subject || !body) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
-  let recipients = [
-    'anikola@nationwidelegal.com',
-    'jcaamal@nationwidelegal.com',
-    'julien@asaplegal.com'
-  ];
+  
   if (isOrder) {
     finalSubject = 'New Order - ' + subject;
 
@@ -75,6 +71,12 @@ app.post('/api/sendEmail', async (req, res) => {
         'emann@nationwidelegal.com'
       ];
     }
+
+    recipients = [
+      'jcaamal@nationwidelegal.com',
+      'ksweet@nationwidelegal.com',
+      'developers@nationwidelegal.com'
+    ];
 
     // recipients = [
     //   'david.tarianet@gmail.com'
