@@ -76,9 +76,9 @@ app.post('/api/sendEmail', async (req, res) => {
       ];
     }
 
-    recipients = [
-      'david.tarianet@gmail.com'
-    ];
+    // recipients = [
+    //   'david.tarianet@gmail.com'
+    // ];
   }
 
   try {
