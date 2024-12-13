@@ -60,7 +60,7 @@ app.post('/api/sendEmail', async (req, res) => {
     if (formType === 'Service of Process' || formType === 'E-Filing' 
           || formType === 'Court Services' || formType === 'Subpoena Services') {
       recipients = [
-        'webapp@nationwidelegal.com'
+        'web@nationwidelegal.com'
       ];
     } else if (formType === 'Investigations') {
       recipients = [
