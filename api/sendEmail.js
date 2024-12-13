@@ -72,11 +72,11 @@ app.post('/api/sendEmail', async (req, res) => {
       ];
     }
 
-    recipients = [
-      'jcaamal@nationwidelegal.com',
-      'ksweet@nationwidelegal.com',
-      'developers@nationwidelegal.com'
-    ];
+    // recipients = [
+    //   'jcaamal@nationwidelegal.com',
+    //   'ksweet@nationwidelegal.com',
+    //   'developers@nationwidelegal.com'
+    // ];
 
     // recipients = [
     //   'david.tarianet@gmail.com'
