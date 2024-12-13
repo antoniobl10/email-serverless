@@ -48,7 +48,7 @@ app.post('/api/sendEmail', async (req, res) => {
   if (!service || !subject || !body) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
-  
+
   if (isOrder) {
     finalSubject = 'New Order - ' + subject;
 
@@ -57,11 +57,13 @@ app.post('/api/sendEmail', async (req, res) => {
       'ksweet@nationwidelegal.com',
       'developers@nationwidelegal.com'
     ];
-    if (formType === 'Service of Process' || formType === 'E-Filing' 
-          || formType === 'Court Services' || formType === 'Subpoena Services') {
+    if (formType === 'Service of Process' || formType === 'E-Filing'
+      || formType === 'Court Services' || formType === 'Subpoena Services') {
       recipients = [
-        'web@nationwidelegal.com'
+        'ANikola@nationwidelegal.com',
       ];
+      cc_recipients = [
+      'Sales@nationwidelegal.com'];
     } else if (formType === 'Investigations') {
       recipients = [
         'investigations@nationwidelegal.com',
@@ -85,19 +87,23 @@ app.post('/api/sendEmail', async (req, res) => {
 
   try {
     const transporter = createTransporter(service);
-
-    await transporter.sendMail({
+  
+    const mailOptions = {
       from: service === 'gmail' ? process.env.GMAIL_USER : process.env.OUTLOOK_USER,
       to: recipients.join(', '),
       subject: finalSubject,
-      // text: body, // Usar el texto como cuerpo del email
-      html: body
-    });
-
-    return res.status(200).json({ message: 'Email sent successfully' });
+      html: body // Use HTML as the email body
+    };
+  
+    // Add cc only if cc_recipients is present and not empty
+    if (cc_recipients && cc_recipients.length > 0) {
+      mailOptions.cc = cc_recipients.join(', ');
+    }
+  
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully');
   } catch (error) {
     console.error('Error sending email:', error);
-    return res.status(500).json({ message: error.message });
   }
 });
 
