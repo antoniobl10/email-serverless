@@ -70,6 +70,10 @@ app.post('/api/sendEmail', async (req, res) => {
   if (isOrder) {
     finalSubject = 'New Order - ' + subject;
 
+    let recipients = [
+      'legal@asaplegal.com'
+    ];
+
     recipients = [
       'jcaamal@nationwidelegal.com',
       'ksweet@nationwidelegal.com',
