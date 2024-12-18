@@ -5,9 +5,10 @@ const app = express();
 
 // Middleware
 const allowedOrigins = [
-  'https://admin.processserver.com',
   'https://nationwidelegal.com',
-  'https://processserver.com'
+  'https://asaplegal.com',
+  'https://processserver.com',
+  'https://admin.processserver.com',
 ];
 
 app.use(cors({
@@ -52,12 +53,14 @@ const createTransporter = (service) => {
   }
 };
 
+//app.get("/", (req, res) => {return res.json({ test: process.env.OUTLOOK_PASS })})
+
 app.post('/api/sendEmail', async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { service, subject, body, isOrder, formData, formType } = req.body;
+  const { service, subject, body, isOrder, formData, formType, isTesting } = req.body;
   let finalSubject = 'ASAP Legal - ' + subject;
 
   if (!service || !subject || !body) {
@@ -117,8 +120,10 @@ app.post('/api/sendEmail', async (req, res) => {
   
     await transporter.sendMail(mailOptions);
     console.log('Email sent successfully');
+    return res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
     console.error('Error sending email:', error);
+    return res.status(500).json({ message: 'Error sending email. Please email us ASAP to web@nationwidelegal.com', error: error.message });
   }
 });
 

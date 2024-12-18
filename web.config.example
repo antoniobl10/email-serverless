@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appSettings>
+        <add key="OUTLOOK_USER" value="email@nationwidelegal.com" />
+        <add key="OUTLOOK_PASS" value="password" />
+        <add key="GMAIL_USER" value="test@gmail.com" />
+        <add key="GMAIL_PASS" value="gmail password" />
+    </appSettings>
+    <system.webServer>
+        <handlers>
+            <add name="iisnode" path="sendEmail.js" verb="*" modules="iisnode" resourceType="File" />
+        </handlers>
+        <rewrite>
+            <rules>
+                <rule name="nodejs">
+                    <match url="(.*)" />
+                    <conditions>
+                        <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+                    </conditions>
+                    <action type="Rewrite" url="sendEmail.js" />
+                </rule>
+            </rules>
+        </rewrite> 
+        
+        <security>
+            <requestFiltering>
+                <hiddenSegments>
+                <add segment="node_modules" />
+                <add segment="iisnode" />
+                </hiddenSegments>
+            </requestFiltering>
+        </security>
+       
+        <iisnode loggingEnabled="false" nodeProcessCommandLine="&quot;%programfiles%\nodejs\node.exe&quot;" interceptor="&quot;%programfiles%\iisnode\interceptor.js&quot;" />
+        <directoryBrowse enabled="false" />
+    </system.webServer>
+</configuration>
