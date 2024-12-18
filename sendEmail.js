@@ -61,18 +61,19 @@ app.post('/api/sendEmail', async (req, res) => {
   }
 
   const { service, subject, body, isOrder, formData, formType, isTesting } = req.body;
-  let finalSubject = 'ASAP Legal - ' + subject;
 
   if (!service || !subject || !body) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
+
+
+  let finalSubject = 'Contact form - ' + subject;
+  cc_recipients = [];
+  let recipients = [];
+  
   if (isOrder) {
     finalSubject = 'New Order - ' + subject;
-
-    let recipients = [
-      'legal@asaplegal.com'
-    ];
 
     recipients = [
       'jcaamal@nationwidelegal.com',
@@ -85,7 +86,8 @@ app.post('/api/sendEmail', async (req, res) => {
         'ANikola@nationwidelegal.com',
       ];
       cc_recipients = [
-      'Sales@nationwidelegal.com']
+        'Sales@nationwidelegal.com'
+      ]
     } else if (formType === 'Investigations') {
       recipients = [
         'investigations@nationwidelegal.com',
@@ -96,32 +98,40 @@ app.post('/api/sendEmail', async (req, res) => {
       ];
     }
 
-    // recipients = [
-    //   'jcaamal@nationwidelegal.com',
-    //   'ksweet@nationwidelegal.com',
-    //   'developers@nationwidelegal.com'
-    // ];
-
-    // recipients = [
-    //   'david.tarianet@gmail.com'
-    // ];
+  } else if (isTesting) {
+    finalSubject = '[TEST] ' + finalSubject;
+    recipients = [
+      'developers@nationwidelegal.com',
+      'mfernandez@nationwidelegal.com'
+    ];
+    cc_recipients = ['david.tarianet@gmail.com'];
+  } else { // ASAP Legal
+    finalSubject = 'ASAP Legal - ' + subject;
+    recipients = [ // Default recipients
+      'Julien@asaplegal.com',
+    ];
+    cc_recipients = [
+      'Sales@nationwidelegal.com',
+      'anikola@nationwidelegal.com'
+    ]
   }
+
 
   try {
     const transporter = createTransporter(service);
-  
+
     const mailOptions = {
       from: service === 'gmail' ? process.env.GMAIL_USER : process.env.OUTLOOK_USER,
       to: recipients.join(', '),
       subject: finalSubject,
       html: body // Use HTML as the email body
     };
-  
+
     // Add cc only if cc_recipients is present and not empty
     if (cc_recipients && cc_recipients.length > 0) {
       mailOptions.cc = cc_recipients.join(', ');
     }
-  
+
     await transporter.sendMail(mailOptions);
     console.log('Email sent successfully');
     return res.status(200).json({ message: 'Email sent successfully' });
