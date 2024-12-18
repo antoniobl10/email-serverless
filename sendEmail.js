@@ -69,9 +69,9 @@ app.post('/api/sendEmail', async (req, res) => {
 
 
   let finalSubject = 'Contact form - ' + subject;
-  cc_recipients = [];
+  letcc_recipients = [];
   let recipients = [];
-  
+
   if (isOrder) {
     finalSubject = 'New Order - ' + subject;
 
@@ -107,7 +107,7 @@ app.post('/api/sendEmail', async (req, res) => {
     cc_recipients = ['david.tarianet@gmail.com'];
   } else { // ASAP Legal
     finalSubject = 'ASAP Legal - ' + subject;
-    recipients = [ // Default recipients
+    recipients = [
       'Julien@asaplegal.com',
     ];
     cc_recipients = [
@@ -133,10 +133,9 @@ app.post('/api/sendEmail', async (req, res) => {
     }
 
     await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully');
+
     return res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
-    console.error('Error sending email:', error);
     return res.status(500).json({ message: 'Error sending email. Please email us ASAP to web@nationwidelegal.com', error: error.message });
   }
 });
